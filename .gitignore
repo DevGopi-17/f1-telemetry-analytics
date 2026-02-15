@@ -1,0 +1,50 @@
+
+output_animation.mp4
+.fastf1-cache
+still_frame.png
+
+.mypy_cache/
+__pycache__/
+
+computed_data/
+
+.DS_Store
+.idea
+
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+
+# FastF1 cache
+.fastf1-cache/
+
+# Computed data
+computed_data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+tempCodeRunnerFile.py
+*.log
+*.tmp
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+src/cli/__pycache__
+src/gui/__pycache__
+src/interfaces/__pycache__
