@@ -199,8 +199,8 @@ flowchart TD
 
     %% Relation arrows color
     linkStyle default stroke:#1E90FF,stroke-width:2px
-
 ```
+
 ## Customization
 
 - Change track width, colors, and UI layout in `src/arcade_replay.py`.
