@@ -6,6 +6,18 @@ A Python application for visualizing Formula 1 race telemetry and replaying race
 
 > **HUGE NEWS:** The telemetry stream feature is now in a usable state. See the [telemetry demo documentation](./telemetry.md) for access instructions, data format details, and usage ideas.
 
+## 📸 Screenshots
+
+<details>
+<summary>Telemetry Viewer</summary>
+
+Live telemetry dashboard and HUD:
+
+![Telemetry Viewer](resources/demo.gif)
+
+</details>
+
+
 ## Features
 
 - **Race Replay Visualization:** Watch the race unfold with real-time driver positions on a rendered track.
@@ -134,71 +146,83 @@ python main.py --viewer --year 2025 --round 12 --qualifying --sprint
 
 ```bash
 f1-race-replay/
-├── main.py                    # Entry point, handles session loading and starts the replay
-├── requirements.txt           # Python dependencies
-├── README.md                  # Project documentation
-├── roadmap.md                 # Planned features and project vision
+├── main.py                                 # Entry point
+├── requirements.txt                        # Python dependencies
+├── README.md                               # Project documentation
+├── roadmap.md                              # Planned features / vision
+├── telemetry.md                             # Telemetry documentation
+├── .gitignore                              # Git ignore file
+├── .gitattributes                          # Git attributes file
 ├── resources/
-│   └── preview.png           # Race replay preview image
+│   └── preview.png                          # Project screenshot / demo image
 ├── src/
-│   ├── f1_data.py            # Telemetry loading, processing, and frame generation
-│   ├── arcade_replay.py      # Visualization and UI logic
-│   └── ui_components.py      # UI components like buttons and leaderboard
+│   ├── f1_data.py                           # Telemetry loading, session handling, data processing
+│   ├── run_session.py                       # run_arcade_replay, launch_telemetry_viewer
+│   ├── bayesian_tyre_model.py               # Bayesian tyre model calculations
+│   ├── tyre_degradation_integration.py      # Tyre degradation simulation
+│   ├── ui_components.py                     # Buttons, leaderboards, HUD
+│   ├── cli/
+│   │   └── race_selection.py                # CLI race selection and arguments
+│   ├── gui/
+│   │   ├── race_selection.py                # GUI race selection (PySide6)
+│   │   ├── settings_dialog.py              # GUI settings dialog
+│   │   └── telemetry_stream_viewer.py      # GUI telemetry live viewer
 │   ├── interfaces/
-│   │   └── qualifying.py     # Qualifying session interface and telemetry visualization
-│   │   └── race_replay.py    # Race replay interface and telemetry visualization
+│   │   └── qualifying.py                    # run_qualifying_replay
+│   │   └── race_replay.py                   # Optional race replay interface
 │   └── lib/
-│       └── tyres.py          # Type definitions for telemetry data structures
-│       └── time.py           # Time formatting utilities
-└── .fastf1-cache/            # FastF1 cache folder (created automatically upon first run)
-└── computed_data/            # Computed telemetry data (created automatically upon first run)
+│       ├── tyres.py                          # Tyre definitions/utilities
+│       ├── time.py                            # Time formatting utilities
+│       └── settings.py                        # Global settings/configs
+├── .fastf1-cache/                           # FastF1 cache (auto-created)
+├── computed_data/                           # Computed telemetry data (auto-created)
+├── venv/                                    # Python virtual environment (local only)
+
 ```
-
-
 
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TD
-    %% Entry Point
-    A[main.py\nEntry Point] --> B[Interfaces Layer]
+flowchart TB
+    A["main.py"] --> B["CLI Race Selection"]
+    A --> C["GUI Race Selection"]
+    
+    B --> D["f1_data.py - Telemetry & Session Loader"]
+    B --> L["Leaderboards / HUD - ui_components.py"]
+    
+    C --> D
+    C --> K["Telemetry Stream Viewer - gui/telemetry_stream_viewer.py"]
+    
+    D --> E["Bayesian Tyre Model - bayesian_tyre_model.py"]
+    D --> F["Tyre Degradation Integration - tyre_degradation_integration.py"]
+    D --> G["Time Utilities - lib/time.py"]
+    D --> H["Settings & Configs - lib/settings.py"]
+    
+    E --> I["Interfaces / Race Replay - interfaces/race_replay.py"]
+    F --> I
+    G --> I
+    H --> I
+    
+    I --> J["UI Components - ui_components.py"]
+    K --> J
 
-    %% Interfaces
-    B --> B1[Qualifying\nqualifying.py]
-    B --> B2[Race Replay\nrace_replay.py]
+    %% Node Colors
+    style A fill:#FFD700,stroke:#000,stroke-width:2px
+    style B fill:#98FB98,stroke:#000,stroke-width:2px
+    style C fill:#98FB98,stroke:#000,stroke-width:2px
+    style D fill:#ADD8E6,stroke:#000,stroke-width:2px
+    style E fill:#FFB6C1,stroke:#000,stroke-width:2px
+    style F fill:#FFB6C1,stroke:#000,stroke-width:2px
+    style G fill:#E0FFFF,stroke:#000,stroke-width:2px
+    style H fill:#E0FFFF,stroke:#000,stroke-width:2px
+    style I fill:#FFA500,stroke:#000,stroke-width:2px
+    style J fill:#90EE90,stroke:#000,stroke-width:2px
+    style K fill:#87CEFA,stroke:#000,stroke-width:2px
+    style L fill:#90EE90,stroke:#000,stroke-width:2px
 
-    %% Visualization
-    B --> C[Visualization Layer\narcade_replay.py]
-    C <--> F[UI Components\nui_components.py]
-
-    %% Data
-    C --> D[Data Layer\nf1_data.py]
-
-    %% Libraries
-    subgraph Libraries["Helper Libraries"]
-        L1[lib/tyres.py]
-        L2[lib/time.py]
-    end
-    D --> L1
-    D --> L2
-
-    %% Cache
-    D --> E[FastF1 API + Cache\n.fastf1-cache/ & computed_data/]
-
-    %% Styles for nodes
-    style A fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
-    style B fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-    style B1 fill:#ADD8E6,stroke:#333,stroke-width:1.5px,color:#000
-    style B2 fill:#ADD8E6,stroke:#333,stroke-width:1.5px,color:#000
-    style C fill:#FFB347,stroke:#333,stroke-width:2px,color:#000
-    style F fill:#FFDD99,stroke:#333,stroke-width:2px,color:#000
-    style D fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
-    style L1 fill:#D3D3D3,stroke:#333,stroke-width:1px,color:#000
-    style L2 fill:#D3D3D3,stroke:#333,stroke-width:1px,color:#000
-    style E fill:#FF9999,stroke:#333,stroke-width:2px,color:#000
-
-    %% Relation arrows color
+    %% Arrow Colors (all blue)
     linkStyle default stroke:#1E90FF,stroke-width:2px
+
 ```
 
 ## Customization
