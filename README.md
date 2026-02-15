@@ -132,7 +132,7 @@ python main.py --viewer --year 2025 --round 12 --qualifying --sprint
 
 ## File Structure
 
-```
+```bash
 f1-race-replay/
 ├── main.py                    # Entry point, handles session loading and starts the replay
 ├── requirements.txt           # Python dependencies
@@ -154,6 +154,53 @@ f1-race-replay/
 └── computed_data/            # Computed telemetry data (created automatically upon first run)
 ```
 
+
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+    %% Entry Point
+    A[main.py\nEntry Point] --> B[Interfaces Layer]
+
+    %% Interfaces
+    B --> B1[Qualifying\nqualifying.py]
+    B --> B2[Race Replay\nrace_replay.py]
+
+    %% Visualization
+    B --> C[Visualization Layer\narcade_replay.py]
+    C <--> F[UI Components\nui_components.py]
+
+    %% Data
+    C --> D[Data Layer\nf1_data.py]
+
+    %% Libraries
+    subgraph Libraries["Helper Libraries"]
+        L1[lib/tyres.py]
+        L2[lib/time.py]
+    end
+    D --> L1
+    D --> L2
+
+    %% Cache
+    D --> E[FastF1 API + Cache\n.fastf1-cache/ & computed_data/]
+
+    %% Styles for nodes
+    style A fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
+    style B1 fill:#ADD8E6,stroke:#333,stroke-width:1.5px,color:#000
+    style B2 fill:#ADD8E6,stroke:#333,stroke-width:1.5px,color:#000
+    style C fill:#FFB347,stroke:#333,stroke-width:2px,color:#000
+    style F fill:#FFDD99,stroke:#333,stroke-width:2px,color:#000
+    style D fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
+    style L1 fill:#D3D3D3,stroke:#333,stroke-width:1px,color:#000
+    style L2 fill:#D3D3D3,stroke:#333,stroke-width:1px,color:#000
+    style E fill:#FF9999,stroke:#333,stroke-width:2px,color:#000
+
+    %% Relation arrows color
+    linkStyle default stroke:#1E90FF,stroke-width:2px
+
+```
 ## Customization
 
 - Change track width, colors, and UI layout in `src/arcade_replay.py`.
