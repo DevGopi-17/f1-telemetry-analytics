@@ -183,45 +183,48 @@ f1-race-replay/
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TB
-    A["main.py"] --> B["CLI Race Selection"]
-    A --> C["GUI Race Selection"]
-    
-    B --> D["f1_data.py - Telemetry & Session Loader"]
-    B --> L["Leaderboards / HUD - ui_components.py"]
-    
-    C --> D
-    C --> K["Telemetry Stream Viewer - gui/telemetry_stream_viewer.py"]
-    
-    D --> E["Bayesian Tyre Model - bayesian_tyre_model.py"]
-    D --> F["Tyre Degradation Integration - tyre_degradation_integration.py"]
-    D --> G["Time Utilities - lib/time.py"]
-    D --> H["Settings & Configs - lib/settings.py"]
-    
-    E --> I["Interfaces / Race Replay - interfaces/race_replay.py"]
-    F --> I
-    G --> I
-    H --> I
-    
-    I --> J["UI Components - ui_components.py"]
-    K --> J
+flowchart TD
 
-    %% Node Colors
-    style A fill:#FFD700,stroke:#000,stroke-width:2px
-    style B fill:#98FB98,stroke:#000,stroke-width:2px
-    style C fill:#98FB98,stroke:#000,stroke-width:2px
-    style D fill:#ADD8E6,stroke:#000,stroke-width:2px
-    style E fill:#FFB6C1,stroke:#000,stroke-width:2px
-    style F fill:#FFB6C1,stroke:#000,stroke-width:2px
-    style G fill:#E0FFFF,stroke:#000,stroke-width:2px
-    style H fill:#E0FFFF,stroke:#000,stroke-width:2px
-    style I fill:#FFA500,stroke:#000,stroke-width:2px
-    style J fill:#90EE90,stroke:#000,stroke-width:2px
-    style K fill:#87CEFA,stroke:#000,stroke-width:2px
-    style L fill:#90EE90,stroke:#000,stroke-width:2px
+A[main.py]:::entry
+B[CLI Race Selection]:::ui
+C[GUI Race Selection]:::ui
+D[Leaderboards / HUD<br/>ui_components.py]:::ui
+E[Telemetry Stream Viewer<br/>gui/telemetry_stream_viewer.py]:::ui
+F[UI Components<br/>ui_components.py]:::ui
+G[F1 Data Loader<br/>f1_data.py]:::core
+H[Time Utilities<br/>lib/time.py]:::core
+I[Settings & Configs<br/>lib/settings.py]:::core
+J[Bayesian Tyre Model<br/>bayesian_tyre_model.py]:::model
+K[Tyre Degradation Integration<br/>tyre_degradation_integration.py]:::model
+L[Race Replay Interface<br/>interfaces/race_replay.py]:::interface
 
-    %% Arrow Colors (all blue)
-    linkStyle default stroke:#1E90FF,stroke-width:2px
+A --> B
+A --> C
+B --> G
+C --> G
+C --> D
+C --> E
+G --> H
+G --> I
+G --> J
+G --> K
+J --> L
+K --> L
+H --> L
+I --> L
+L --> F
+E --> F
+
+%% 🔵 Blue arrows
+linkStyle default stroke:#1E90FF,stroke-width:2px;
+
+%% 🎨 Box Styles (White Text)
+classDef entry fill:#FFD700,color:#FFFFFF,stroke:#000,stroke-width:2px;
+classDef ui fill:#2E8B57,color:#FFFFFF,stroke:#1B5E20,stroke-width:1.5px;
+classDef core fill:#4682B4,color:#FFFFFF,stroke:#1C4587,stroke-width:1.5px;
+classDef model fill:#C71585,color:#FFFFFF,stroke:#880E4F,stroke-width:1.5px;
+classDef interface fill:#FF8C00,color:#FFFFFF,stroke:#E65100,stroke-width:1.5px;
+
 
 ```
 
